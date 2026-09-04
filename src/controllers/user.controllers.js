@@ -1,13 +1,13 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import {ApiError} from "../utils/ApiError.js"
-import { User} from "../models/user.model.js"
+import { asyncHandler } from "../utils/asynchandler.js";
+import {ApiError} from "../utils/Apierrors.js"
+import { User} from "../models/user.models.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/Apiresponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
 
-const generateAccessAndRefereshTokens = async(userId) =>{
+/*const generateAccessAndRefereshTokens = async(userId) =>{
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
@@ -22,7 +22,7 @@ const generateAccessAndRefereshTokens = async(userId) =>{
     } catch (error) {
         throw new ApiError(500, "Something went wrong while generating referesh and access token")
     }
-}
+}*/
 
 const registerUser = asyncHandler( async (req, res) => {
     // get user details from frontend
@@ -54,7 +54,7 @@ const registerUser = asyncHandler( async (req, res) => {
     }
     //console.log(req.files);
 
-    const avatarLocalPath = req.files?.avatar[0]?.path;
+    const avatarLocalPath = req.files?.avatar?.[0]?.path
     //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     let coverImageLocalPath;
@@ -62,15 +62,18 @@ const registerUser = asyncHandler( async (req, res) => {
         coverImageLocalPath = req.files.coverImage[0].path
     }
     
-
+    console.log("avatarLocalPath:", avatarLocalPath);
+    console.log("coverImageLocalPath:", coverImageLocalPath);
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required")
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+    //console.log("avatar cloudinary:", avatar);
+    //console.log("coverImage cloudinary:", coverImage);
 
-    if (!avatar) {
+    if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required")
     }
    
@@ -98,7 +101,7 @@ const registerUser = asyncHandler( async (req, res) => {
 
 } )
 
-const loginUser = asyncHandler(async (req, res) =>{
+/*const loginUser = asyncHandler(async (req, res) =>{
     // req body -> data
     // username or email
     //find the user
@@ -478,12 +481,12 @@ const getWatchHistory = asyncHandler(async(req, res) => {
             "Watch history fetched successfully"
         )
     )
-})
+})*/
 
 
 export {
-    registerUser,
-    loginUser,
+    registerUser
+    /*loginUser,
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
@@ -492,5 +495,5 @@ export {
     updateUserAvatar,
     updateUserCoverImage,
     getUserChannelProfile,
-    getWatchHistory
+    getWatchHistory*/
 }
